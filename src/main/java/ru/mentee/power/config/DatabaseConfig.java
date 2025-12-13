@@ -11,4 +11,6 @@ public class DatabaseConfig {
     private String username;
     private String password;
     private String driverClassName = "org.postgresql.Driver";
+    private String hbm2ddlAuto = "update";
+    private boolean showSql = false;
 }

@@ -17,7 +17,8 @@ class HibernateConfigTest {
         // Given
         DatabaseConfig dbConfig = new DatabaseConfig();
         // Создаем схему через INIT для H2
-        dbConfig.setJdbcUrl("jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS mentee_power");
+        dbConfig.setJdbcUrl(
+                "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS mentee_power;USER=sa;PASSWORD=");
         dbConfig.setUsername("sa");
         dbConfig.setPassword("");
 

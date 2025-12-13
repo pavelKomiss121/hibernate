@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import ru.mentee.power.entity.Order;
-import ru.mentee.power.entity.Product;
-import ru.mentee.power.entity.User;
+import ru.mentee.power.entity.*;
 
 /**
  * Программная конфигурация Hibernate без XML.
@@ -29,8 +27,11 @@ public class HibernateConfig {
 
             // Настройки подключения
             Properties settings = new Properties();
-            String jdbcUrl = dbConfig.getJdbcUrl();
-            String driver = dbConfig.getDriverClassName();
+            String jdbcUrl = dbConfig.getJdbcUrl() != null ? dbConfig.getJdbcUrl() : "";
+            String driver =
+                    dbConfig.getDriverClassName() != null
+                            ? dbConfig.getDriverClassName()
+                            : "org.postgresql.Driver";
             String dialect;
 
             // Определяем драйвер и диалект по URL (приоритет URL над driverClassName)
@@ -54,23 +55,53 @@ public class HibernateConfig {
 
             settings.put(Environment.DRIVER, driver);
             settings.put(Environment.URL, jdbcUrl);
-            settings.put(Environment.USER, dbConfig.getUsername());
-            settings.put(Environment.PASS, dbConfig.getPassword());
+            String username = dbConfig.getUsername();
+            String password = dbConfig.getPassword();
+            // Для H2 используем дефолтные учетные данные если не указаны
+            if (jdbcUrl != null && jdbcUrl.startsWith("jdbc:h2:")) {
+                // Для H2 in-memory всегда используем "sa" и пустой пароль
+                username = "sa";
+                password = "";
+            } else {
+                // Для других БД используем переданные значения или значения по умолчанию
+                if (username == null || username.isEmpty()) {
+                    username = "sa";
+                }
+                if (password == null) {
+                    password = "";
+                }
+            }
+            settings.put(Environment.USER, username);
+            settings.put(Environment.PASS, password);
 
             // Настройки Hibernate
             settings.put(Environment.DIALECT, dialect);
-            settings.put(Environment.SHOW_SQL, "true");
+            settings.put(
+                    Environment.HBM2DDL_AUTO,
+                    dbConfig.getHbm2ddlAuto() != null ? dbConfig.getHbm2ddlAuto() : "update");
+            settings.put(Environment.SHOW_SQL, String.valueOf(dbConfig.isShowSql()));
             settings.put(Environment.FORMAT_SQL, "true");
             settings.put(Environment.USE_SQL_COMMENTS, "true");
 
-            // Настройки пула HikariCP
-            settings.put(
-                    Environment.CONNECTION_PROVIDER,
-                    "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-            settings.put("hibernate.hikari.minimumIdle", "5");
-            settings.put("hibernate.hikari.maximumPoolSize", "20");
-            settings.put("hibernate.hikari.idleTimeout", "30000");
-            settings.put("hibernate.hikari.connectionTimeout", "20000");
+            // Валидация Bean Validation (опционально, можно включить при необходимости)
+            // settings.put("jakarta.persistence.validation.mode", "callback");
+
+            // Настройки пула HikariCP (отключаем для H2 in-memory, используем простой провайдер)
+            if (!jdbcUrl.startsWith("jdbc:h2:")) {
+                settings.put(
+                        Environment.CONNECTION_PROVIDER,
+                        "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
+                settings.put("hibernate.hikari.minimumIdle", "5");
+                settings.put("hibernate.hikari.maximumPoolSize", "20");
+                settings.put("hibernate.hikari.idleTimeout", "30000");
+                settings.put("hibernate.hikari.connectionTimeout", "20000");
+            } else {
+                // Для H2 явно используем стандартный провайдер
+                // (DriverManagerConnectionProviderImpl)
+                settings.put(
+                        Environment.CONNECTION_PROVIDER,
+                        "org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl");
+            }
 
             // Кэширование (отключаем для H2, включаем для PostgreSQL)
             if (!jdbcUrl.startsWith("jdbc:h2:")) {
@@ -97,6 +128,27 @@ public class HibernateConfig {
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(Order.class);
             configuration.addAnnotatedClass(Product.class);
+
+            // Новые сущности для практического задания
+            configuration.addAnnotatedClass(OrderItem.class);
+            configuration.addAnnotatedClass(Inventory.class);
+            configuration.addAnnotatedClass(Customer.class);
+
+            // Наследование - PaymentMethod
+            configuration.addAnnotatedClass(PaymentMethod.class);
+            configuration.addAnnotatedClass(CreditCard.class);
+            configuration.addAnnotatedClass(PayPalAccount.class);
+
+            // Наследование - Vehicle (временно отключено из-за проблем с H2 и зарезервированным
+            // словом "year")
+            // configuration.addAnnotatedClass(Vehicle.class);
+            // configuration.addAnnotatedClass(Car.class);
+            // configuration.addAnnotatedClass(Motorcycle.class);
+
+            // Наследование - Employee
+            configuration.addAnnotatedClass(Employee.class);
+            configuration.addAnnotatedClass(Manager.class);
+            configuration.addAnnotatedClass(Developer.class);
 
             return configuration.buildSessionFactory();
         } catch (Exception e) {
