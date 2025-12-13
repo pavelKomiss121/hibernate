@@ -1,4 +1,4 @@
-package ru.mentee.power.entity;
+package ru.mentee.power.entity.mp_177;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -11,6 +11,10 @@ import java.time.Period;
 import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.*;
+import ru.mentee.power.entity.mp_178.Address;
+import ru.mentee.power.entity.mp_178.Dimensions;
+import ru.mentee.power.entity.mp_178.ProductCategory;
+import ru.mentee.power.entity.mp_178.ProductStatus;
 
 /**
  * Сущность товара с демонстрацией всех типов маппинга.

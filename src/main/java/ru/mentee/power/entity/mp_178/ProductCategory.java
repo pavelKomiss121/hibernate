@@ -1,4 +1,4 @@
-package ru.mentee.power.entity;
+package ru.mentee.power.entity.mp_178;
 
 /**
  * Категории товаров.

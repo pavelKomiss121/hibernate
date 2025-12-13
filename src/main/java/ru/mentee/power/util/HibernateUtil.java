@@ -6,9 +6,9 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import ru.mentee.power.entity.Order;
-import ru.mentee.power.entity.Product;
-import ru.mentee.power.entity.User;
+import ru.mentee.power.entity.mp_177.Order;
+import ru.mentee.power.entity.mp_177.Product;
+import ru.mentee.power.entity.mp_177.User;
 
 /**
  * Утилита для создания и управления SessionFactory.

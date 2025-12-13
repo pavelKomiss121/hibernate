@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import ru.mentee.power.entity.*;
+import ru.mentee.power.entity.mp_177.Order;
+import ru.mentee.power.entity.mp_177.Product;
+import ru.mentee.power.entity.mp_177.User;
+import ru.mentee.power.entity.mp_178.*;
 
 /**
  * Программная конфигурация Hibernate без XML.
