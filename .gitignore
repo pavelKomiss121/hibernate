@@ -1,0 +1,44 @@
+
+                            #
+                             Данные PostgreSQL
+
+docker/postgres-data/
+docker/pgadmin-data/
+
+
+                            #
+                             Gradle
+
+build/
+.gradle/
+
+
+                            #
+                             IDE
+
+.idea/
+.idea/*
+*.iml
+.vscode/
+
+# Скомпилированные классы (Eclipse, IntelliJ)
+bin/
+
+
+                            #
+                             OS
+
+.DS_Store
+
+
+                            #
+                             ⚠️ ВАЖНО: Локальные секреты для разработки
+
+
+secret.properties
+
+                            #
+                             Логи
+
+logs/
+*.log
