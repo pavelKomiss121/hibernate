@@ -1,7 +1,7 @@
 package ru.mentee.power.dao;
 
 import org.hibernate.SessionFactory;
-import ru.mentee.power.entity.User;
+import ru.mentee.power.entity.mp_177.User;
 
 /**
  * Реализация UserDAO через Hibernate.

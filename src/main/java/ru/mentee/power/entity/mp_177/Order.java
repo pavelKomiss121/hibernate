@@ -1,4 +1,4 @@
-package ru.mentee.power.entity;
+package ru.mentee.power.entity.mp_177;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

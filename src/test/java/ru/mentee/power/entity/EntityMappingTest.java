@@ -13,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.config.DatabaseConfig;
 import ru.mentee.power.config.HibernateConfig;
+import ru.mentee.power.entity.mp_177.Product;
+import ru.mentee.power.entity.mp_178.*;
 
 /**
  * Тесты для маппинга сущностей.
