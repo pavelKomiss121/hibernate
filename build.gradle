@@ -154,7 +154,7 @@ jacocoTestReport {
 	dependsOn test
 	reports {
 		xml.required = true
-		xml.outputLocation = layout.buildDirectory.dir('reports/jacoco/test/jacoco.xml')
+		xml.outputLocation = layout.buildDirectory.file('reports/jacoco/test/jacoco.xml')
 		csv.required = false
 		html.outputLocation = layout.buildDirectory.dir('reports/jacoco/test/html')
 	}
