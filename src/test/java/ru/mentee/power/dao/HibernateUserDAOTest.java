@@ -30,7 +30,10 @@ class HibernateUserDAOTest {
         // Создаем схему через INIT для H2
         configuration.setProperty(
                 "hibernate.connection.url",
-                "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS mentee_power");
+                "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS"
+                        + " mentee_power;USER=sa;PASSWORD=");
+        configuration.setProperty("hibernate.connection.username", "sa");
+        configuration.setProperty("hibernate.connection.password", "");
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         configuration.setProperty("hibernate.show_sql", "true");
