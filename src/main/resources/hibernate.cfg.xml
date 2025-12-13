@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Настройки подключения к БД -->
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/mentee_power_db</property>
+        <property name="connection.username">mentee_power</property>
+        <!-- Пароль из переменной окружения -->
+        <property name="connection.password">${DB_PASSWORD}</property>
+
+        <!-- Настройки пула соединений C3P0 -->
+        <property name="connection.provider_class">
+            org.hibernate.connection.C3P0ConnectionProvider
+        </property>
+        <property name="c3p0.min_size">5</property>
+        <property name="c3p0.max_size">20</property>
+        <property name="c3p0.timeout">300</property>
+        <property name="c3p0.max_statements">50</property>
+        <property name="c3p0.idle_test_period">3000</property>
+
+        <!-- SQL диалект -->
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Вывод SQL в консоль (только для разработки) -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+
+        <!-- Автоматическое создание схемы БД -->
+        <property name="hbm2ddl.auto">validate</property>
+
+        <!-- Статистика Hibernate -->
+        <property name="generate_statistics">true</property>
+
+        <!-- Настройки кэша второго уровня -->
+        <property name="cache.use_second_level_cache">true</property>
+        <property name="cache.region.factory_class">
+            org.hibernate.cache.jcache.internal.JCacheRegionFactory
+        </property>
+        <property name="cache.use_query_cache">true</property>
+
+        <!-- Batch размер для производительности -->
+        <property name="jdbc.batch_size">25</property>
+        <property name="order_inserts">true</property>
+        <property name="order_updates">true</property>
+        <property name="batch_versioned_data">true</property>
+    </session-factory>
+</hibernate-configuration>

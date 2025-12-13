@@ -1,0 +1,160 @@
+plugins {
+	id 'java'
+	id 'com.diffplug.spotless' version '6.23.3'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
+}
+// Настройки проекта (из MP-153)
+group = 'ru.mentee.power'
+version = '1.0.0'
+
+
+repositories {
+	mavenCentral()
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+// Версии зависимостей (расширение конфигурации из MP-153)
+ext {
+	versions = [
+			// Плагины
+			spotless          : '6.23.3',
+
+		// Основные зависимости
+		postgresql        : '42.6.0',
+		lombok           : '1.18.30',
+
+		// Hibernate
+		hibernate        : '6.4.4.Final',
+		jakartaPersistence : '3.1.0',
+		c3p0            : '0.9.5.5',
+		ehcache         : '3.10.8',
+
+			// Логирование
+			slf4j            : '2.0.9',
+			logback          : '1.4.11',
+
+			// Тестирование
+			junit            : '5.10.0',
+			assertj          : '3.24.2',
+			h2               : '2.2.224',  // Добавлено для тестов
+
+			// Инструменты
+			googleJavaFormat : '1.17.0'
+	]
+}
+
+dependencies {
+	// Основные зависимости
+	implementation 'org.postgresql:postgresql:42.6.0'
+	implementation 'org.slf4j:slf4j-api:2.0.9'
+	implementation 'ch.qos.logback:logback-classic:1.4.11'
+
+	// Hibernate
+	implementation "org.hibernate.orm:hibernate-core:${versions.hibernate}"
+	implementation "org.hibernate.orm:hibernate-hikaricp:${versions.hibernate}"
+	implementation "org.hibernate.orm:hibernate-jcache:${versions.hibernate}"
+	implementation "jakarta.persistence:jakarta.persistence-api:${versions.jakartaPersistence}"
+
+	// Connection Pool
+	implementation 'com.zaxxer:HikariCP:5.1.0'
+	implementation 'org.apache.commons:commons-dbcp2:2.11.0'
+	implementation "com.mchange:c3p0:${versions.c3p0}"
+
+	// Cache
+	implementation "org.ehcache:ehcache:${versions.ehcache}"
+	implementation 'javax.cache:cache-api:1.1.1'
+
+	// Метрики и мониторинг
+	implementation 'io.micrometer:micrometer-core:1.12.0'
+	implementation 'io.dropwizard.metrics:metrics-core:4.2.22'
+
+	// Тестирование
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.assertj:assertj-core:3.24.2'
+
+	// TestContainers
+	testImplementation "org.testcontainers:testcontainers:1.20.4"
+	testImplementation "org.testcontainers:junit-jupiter:1.20.4"
+	testImplementation "org.testcontainers:postgresql:1.20.4"
+
+	// H2 (для H2-тестов)
+	testImplementation 'com.h2database:h2:2.2.224'
+
+	// Дополнительные утилиты
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	testCompileOnly 'org.projectlombok:lombok:1.18.30'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+	// Логирование
+	implementation 'ch.qos.logback:logback-classic'
+}
+
+// Обязательная секция для TestContainers
+dependencyManagement {
+	imports {
+		mavenBom "org.testcontainers:testcontainers-bom:1.19.1"
+	}
+}
+
+spotless {
+	format 'misc', {
+		target '*.gradle', '.gitattributes', '.gitignore'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		targetExclude('**/build/**', '**/build-generated/**')
+		googleJavaFormat("${versions.googleJavaFormat}").aosp().reflowLongStrings().skipJavadocFormatting()
+		formatAnnotations()
+		// Временно отключено для пустых файлов - будет включено после заполнения файлов
+		// licenseHeader '/* @MENTEE_POWER (C)$YEAR */'
+	}
+}
+
+compileJava {
+	options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+	options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+test {
+	useJUnitPlatform()
+	// JaCoCo автоматически генерирует отчет после выполнения тестов
+	finalizedBy jacocoTestReport
+
+	// В CI миграции применяются автоматически через Testcontainers в тестах Liquibase
+	// Для локальной разработки можно запустить вручную: ./gradlew liquibaseUpdateTest test
+
+	systemProperty 'DB_URL', 'jdbc:postgresql://localhost:5433/mentee_power_test_db'
+	systemProperty 'DB_USER', 'mentee'
+	systemProperty 'DB_PASSWORD', 'password123'
+}
+
+// Настройка JaCoCo для генерации отчетов покрытия кода
+jacoco {
+	toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = false
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('reports/jacoco/test/html')
+	}
+}
