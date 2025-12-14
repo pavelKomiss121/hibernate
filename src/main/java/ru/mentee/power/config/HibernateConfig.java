@@ -9,6 +9,8 @@ import ru.mentee.power.entity.mp_177.Order;
 import ru.mentee.power.entity.mp_177.Product;
 import ru.mentee.power.entity.mp_177.User;
 import ru.mentee.power.entity.mp_178.*;
+import ru.mentee.power.entity.relationship.*;
+import ru.mentee.power.entity.relationship.Employee;
 
 /**
  * Программная конфигурация Hibernate без XML.
@@ -24,6 +26,7 @@ public class HibernateConfig {
     /**
      * Создание SessionFactory с программной конфигурацией.
      */
+    @SuppressWarnings("deprecation")
     public SessionFactory buildSessionFactory() {
         try {
             Configuration configuration = new Configuration();
@@ -133,9 +136,9 @@ public class HibernateConfig {
             configuration.addAnnotatedClass(Product.class);
 
             // Новые сущности для практического задания
-            configuration.addAnnotatedClass(OrderItem.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.mp_178.OrderItem.class);
             configuration.addAnnotatedClass(Inventory.class);
-            configuration.addAnnotatedClass(Customer.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.mp_178.Customer.class);
 
             // Наследование - PaymentMethod
             configuration.addAnnotatedClass(PaymentMethod.class);
@@ -152,6 +155,28 @@ public class HibernateConfig {
             configuration.addAnnotatedClass(Employee.class);
             configuration.addAnnotatedClass(Manager.class);
             configuration.addAnnotatedClass(Developer.class);
+
+            // Сущности для практического задания по связям
+            // OneToMany / ManyToOne
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Order.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.OrderItem.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Customer.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Product.class);
+
+            // OneToOne
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.User.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.UserProfile.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Address.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Employee.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.ParkingSpot.class);
+            configuration.addAnnotatedClass(
+                    ru.mentee.power.entity.relationship.SocialMediaLinks.class);
+
+            // ManyToMany
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Student.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Course.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.Enrollment.class);
+            configuration.addAnnotatedClass(ru.mentee.power.entity.relationship.EnrollmentId.class);
 
             return configuration.buildSessionFactory();
         } catch (Exception e) {

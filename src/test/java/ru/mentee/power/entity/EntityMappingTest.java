@@ -25,6 +25,7 @@ class EntityMappingTest {
     private Session session;
 
     @BeforeEach
+    @SuppressWarnings("deprecation")
     void setUp() {
         DatabaseConfig dbConfig = new DatabaseConfig();
         dbConfig.setJdbcUrl(
