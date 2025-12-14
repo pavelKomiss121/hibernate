@@ -44,6 +44,11 @@ public class HibernateConfig {
             if (jdbcUrl != null && jdbcUrl.startsWith("jdbc:h2:")) {
                 driver = "org.h2.Driver";
                 dialect = "org.hibernate.dialect.H2Dialect";
+                // Добавляем INIT для создания схемы если её нет в URL
+                if (!jdbcUrl.contains("INIT=")) {
+                    String separator = jdbcUrl.contains("?") ? "&" : ";";
+                    jdbcUrl = jdbcUrl + separator + "INIT=CREATE SCHEMA IF NOT EXISTS mentee_power";
+                }
             } else if (jdbcUrl != null && jdbcUrl.startsWith("jdbc:postgresql:")) {
                 driver = "org.postgresql.Driver";
                 dialect = "org.hibernate.dialect.PostgreSQLDialect";
