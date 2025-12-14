@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -22,6 +24,10 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity(name = "RelationshipOrder")
 @Table(name = "orders")
+@Cacheable
+@Cache(
+        usage = CacheConcurrencyStrategy.READ_WRITE,
+        region = "ru.mentee.power.entity.relationship.Order")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

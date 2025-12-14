@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -19,6 +21,10 @@ import org.hibernate.annotations.Where;
  */
 @Entity(name = "RelationshipCustomer")
 @Table(name = "customers")
+@Cacheable
+@Cache(
+        usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
+        region = "ru.mentee.power.entity.relationship.Customer")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,6 +60,9 @@ public class Customer {
             fetch = FetchType.LAZY)
     @OrderBy("orderDate DESC") // Последние заказы первыми
     @Where(clause = "status != 'CANCELLED'") // Фильтр на уровне Hibernate
+    @Cache(
+            usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
+            region = "ru.mentee.power.entity.relationship.Customer.orders")
     @BatchSize(size = 10)
     @LazyCollection(LazyCollectionOption.EXTRA) // Оптимизация для size()
     @Builder.Default
