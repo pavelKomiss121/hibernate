@@ -1,18 +1,31 @@
 package ru.mentee.power.entity.relationship;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * OneToOne через общий первичный ключ.
+ * Сущность пользователя с READ_WRITE кэшированием.
  */
 @Entity(name = "RelationshipUser")
 @Table(name = "users")
+@Cacheable
+@Cache(
+        usage = CacheConcurrencyStrategy.READ_WRITE,
+        region = "ru.mentee.power.entity.relationship.User")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -20,6 +33,8 @@ public class User {
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false, length = 50)
+    @NaturalId
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private String username;
 
     @Column(name = "email", unique = true, nullable = false)
@@ -27,6 +42,24 @@ public class User {
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "active")
+    @Builder.Default
+    private boolean active = true;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     // OneToOne с общим первичным ключом
     @OneToOne(
