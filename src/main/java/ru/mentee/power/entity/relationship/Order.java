@@ -23,7 +23,22 @@ import org.hibernate.annotations.NotFoundAction;
  * Сущность заказа с OneToMany связью.
  */
 @Entity(name = "RelationshipOrder")
-@Table(name = "orders")
+@Table(
+        name = "orders",
+        indexes = {
+            @Index(name = "idx_order_status_date", columnList = "status, order_date DESC"),
+            @Index(name = "idx_order_customer", columnList = "customer_id"),
+            @Index(name = "idx_order_total", columnList = "total_amount")
+        })
+@NamedEntityGraph(
+        name = "order-with-details",
+        attributeNodes = {
+            @NamedAttributeNode("customer"),
+            @NamedAttributeNode(value = "orderItems", subgraph = "items")
+        },
+        subgraphs = {
+            @NamedSubgraph(name = "items", attributeNodes = @NamedAttributeNode("product"))
+        })
 @Cacheable
 @Cache(
         usage = CacheConcurrencyStrategy.READ_WRITE,
